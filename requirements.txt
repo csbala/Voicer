@@ -1,2 +1,6 @@
 selenium
 SpeechRecognition
+pylint
+flake8
+black
+isort
