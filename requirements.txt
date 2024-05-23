@@ -1,6 +1,5 @@
 selenium
-SpeechRecognition
+python-dotenv
+speechrecognition
+pyaudio
 pylint
-flake8
-black
-isort

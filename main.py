@@ -1,30 +1,35 @@
 from selenium import webdriver
 import time
-from dotenv import load_dotenv
-import os
-from utils.cookies import load_cookies  # Import the utility function
+from utils.speech_recognition import recognize_speech_from_mic  # Import the speech recognition function
+from pages.chat_page import ChatPage  # Import the ChatPage class
+from factory.browser_factory import BrowserFactory  # Import the BrowserFactory class
 
 def main():
-    # Load environment variables from .env file
-    load_dotenv()
-    url = os.getenv('URL')
-    cookies_file = os.getenv('COOKIES_FILE')
-
-    # Set up the Edge web driver (ensure you have EdgeDriver installed and in your PATH)
-    driver = webdriver.Edge()
-
     try:
-        # Open the specified URL
-        driver.get(url)
+        # Initialize the browser using the factory
+        browser_factory = BrowserFactory()
+        driver = browser_factory.create_driver()
 
-        # Load cookies
-        load_cookies(driver, cookies_file)
-
-        # Refresh the page to apply cookies
-        driver.refresh()
+        # Open the chat page
+        chat_page = ChatPage(driver)
 
         # Wait for some time to observe the result (optional)
-        time.sleep(10)
+        time.sleep(5)
+
+        # Recognize speech and convert to text
+        while True:
+            print("Please speak into the microphone...")
+            text = recognize_speech_from_mic()
+            if text.lower() == "exit":
+                print("Exiting...")
+                break
+            print(f"You said: {text}")
+
+            # Send the message using the ChatPage class
+            chat_page.send_message(text)
+
+            # Wait for a short period before next input
+            time.sleep(5)
 
     finally:
         # Close the browser
